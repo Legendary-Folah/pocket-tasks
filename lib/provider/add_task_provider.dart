@@ -50,6 +50,15 @@ class TaskListNotifier extends StateNotifier<List<AddTaskModel>> {
     _saveTasks();
   }
 
+  void updateTask(int index, AddTaskModel updatedTask) {
+    final updated = [...state];
+    if (index >= 0 && index < updated.length) {
+      updated[index] = updatedTask;
+      state = updated;
+      _saveTasks();
+    }
+  }
+
   void toggleTask(int index) {
     final updatedTasks = [...state]..removeAt(index);
     state = updatedTasks;

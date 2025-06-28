@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocket_tasks/provider/add_task_provider.dart';
 
-class TaskList extends StatefulWidget {
+class TaskList extends ConsumerStatefulWidget {
   const TaskList({super.key});
 
   @override
-  State<TaskList> createState() => _TaskListState();
+  ConsumerState<TaskList> createState() => _TaskListState();
 }
 
-class _TaskListState extends State<TaskList> {
+class _TaskListState extends ConsumerState<TaskList> {
   @override
   Widget build(BuildContext context) {
+    final taskList = ref.watch(taskListProvider);
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      ),
+      body: taskList.isEmpty
+          ? Center(child: Text('No Tasks Added yet'))
+          : Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+              child: ListView.builder(
+                itemCount: taskList.length,
+                itemBuilder: (context, index) {
+                  final task = taskList[index];
+                  return ListTile();
+                },
+              ),
+            ),
     );
   }
 }

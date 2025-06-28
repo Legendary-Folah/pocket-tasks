@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/core/colors.dart';
 import 'package:pocket_tasks/model/add_task_model.dart';
+import 'package:pocket_tasks/presentation/widgets/custom_text_field.dart';
 import 'package:pocket_tasks/provider/add_task_provider.dart';
 
 class AddTaskScreen extends ConsumerStatefulWidget {
@@ -19,7 +20,7 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   bool isCompleted = false;
   @override
   Widget build(BuildContext context) {
-    final formData = ref.watch(taskListProvider);
+    // final formData = ref.watch(taskListProvider);
 
     void pickDate(BuildContext context) async {
       final now = DateTime.now();
@@ -63,21 +64,15 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
             spacing: 15,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: 'title',
-                  border: OutlineInputBorder(),
-                ),
+              CustomTextFormField(
+                noteController: _titleController,
+                labelText: 'Title',
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: _noteController,
+              CustomTextFormField(
                 maxLines: 7,
-                decoration: InputDecoration(
-                  labelText: 'Note',
-                  border: OutlineInputBorder(),
-                ),
+                labelText: 'Note',
+                noteController: _noteController,
               ),
               SizedBox(height: 16),
               Row(
