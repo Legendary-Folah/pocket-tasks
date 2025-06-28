@@ -5,13 +5,13 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
     required TextEditingController noteController,
-    required this.labelText,
+    this.labelText,
     this.maxLines,
   }) : _noteController = noteController;
 
   final TextEditingController _noteController;
   final int? maxLines;
-  final String labelText;
+  final String? labelText;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,10 @@ class CustomTextFormField extends StatelessWidget {
       controller: _noteController,
       maxLines: maxLines,
       decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 10,
+        ),
         labelText: labelText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocket_tasks/core/colors.dart';
 import 'package:pocket_tasks/presentation/screens/add_task_screen.dart';
 import 'package:pocket_tasks/presentation/screens/task_list.dart';
 import 'package:pocket_tasks/provider/theme_provider.dart';
@@ -36,6 +37,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: darkMode ? ColorsConst.kBlack : ColorsConst.kWhite,
         currentIndex: _currentIndex,
         onTap: (value) {
           setState(() {

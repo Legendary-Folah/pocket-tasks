@@ -60,9 +60,15 @@ class TaskListNotifier extends StateNotifier<List<AddTaskModel>> {
   }
 
   void toggleTask(int index) {
-    final updatedTasks = [...state]..removeAt(index);
-    state = updatedTasks;
-    _saveTasks();
+    final task = state[index];
+    final updatedTask = AddTaskModel(
+      title: task.title,
+      note: task.note,
+      dueDate: task.dueDate,
+      isCompleted: !task.isCompleted,
+    );
+
+    updateTask(index, updatedTask);
   }
 }
 

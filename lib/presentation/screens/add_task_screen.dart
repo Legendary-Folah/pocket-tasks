@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/core/colors.dart';
+import 'package:pocket_tasks/core/constants.dart';
 import 'package:pocket_tasks/model/add_task_model.dart';
+import 'package:pocket_tasks/presentation/widgets/custom_button.dart';
 import 'package:pocket_tasks/presentation/widgets/custom_text_field.dart';
 import 'package:pocket_tasks/provider/add_task_provider.dart';
+import 'package:pocket_tasks/provider/theme_provider.dart';
 
 class AddTaskScreen extends ConsumerStatefulWidget {
   const AddTaskScreen({super.key});
@@ -20,6 +23,7 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   bool isCompleted = false;
   @override
   Widget build(BuildContext context) {
+    final darkMode = ref.watch(themeProvider);
     // final formData = ref.watch(taskListProvider);
 
     void pickDate(BuildContext context) async {
@@ -40,15 +44,23 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
     void submitTask() {
       try {
         if (_formKey.currentState?.validate() ?? false) {
+          if (selectedDate == null) {
+            context.showErrorSnackBar(message: 'Please select a due date.');
+            return;
+          }
+          if (_titleController.text.isEmpty && _noteController.text.isEmpty) {
+            context.showErrorSnackBar(message: 'Please enter a title or note.');
+          }
           final tasks = AddTaskModel(
             dueDate: selectedDate!,
-            isCompleted: isCompleted,
             note: _noteController.text.trim(),
             title: _titleController.text.trim(),
           );
           ref.read(taskListProvider.notifier).addTask(tasks);
           _titleController.clear();
           _noteController.clear();
+          selectedDate = null;
+          context.showSuccessSnackBar(message: 'Task added successfully!');
         }
       } catch (e) {
         throw Exception('Failed to submit task: $e');
@@ -58,69 +70,81 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
     return Scaffold(
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            spacing: 15,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomTextFormField(
-                noteController: _titleController,
-                labelText: 'Title',
-              ),
-              SizedBox(height: 16),
-              CustomTextFormField(
-                maxLines: 7,
-                labelText: 'Note',
-                noteController: _noteController,
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  Text(
-                    selectedDate != null
-                        ? 'Due: ${selectedDate!.toLocal().toString().split(' ')[0]}'
-                        : 'No due date selected',
-                  ),
-                  Spacer(),
-                  ElevatedButton(
-                    onPressed: () => pickDate(context),
-                    child: Text('Pick Due Date'),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              Row(
-                children: [
-                  Checkbox(
-                    value: isCompleted,
-                    onChanged: (value) {
-                      setState(() {
-                        isCompleted = value ?? false;
-                      });
-                    },
-                  ),
-                  Text('Completed'),
-                ],
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(ColorsConst.kPurple),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Column(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomTextFormField(
+                  noteController: _titleController,
+                  labelText: 'Title',
                 ),
-                onPressed: () {
-                  // Logic to add task goes here
-                },
-                child: const Text(
-                  'Add Task',
-                  style: TextStyle(
-                    color: ColorsConst.kWhite,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+                SizedBox(height: 10),
+                CustomTextFormField(
+                  maxLines: 7,
+                  noteController: _noteController,
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Row(
+                  spacing: 4,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        selectedDate != null
+                            ? 'Due: ${selectedDate!.toLocal().toString().split(' ')[0]}'
+                            : 'No due date selected',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: darkMode
+                              ? ColorsConst.kWhite
+                              : ColorsConst.kBlack,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        height: 40,
+                        onPressed: () {
+                          pickDate(context);
+                          debugPrint('printing date');
+                        },
+                        width: 160,
+                        text: 'Pick Due Date',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                // Row(
+                //   children: [
+                //     Checkbox(
+                //       value: isCompleted,
+                //       onChanged: (value) {
+                //         setState(() {
+                //           isCompleted = value ?? false;
+                //         });
+                //       },
+                //     ),
+                //     Text('Completed'),
+                //   ],
+                // ),
+                SizedBox(height: 16),
+                CustomButton(
+                  height: 50,
+                  text: 'Add Task',
+                  width: double.infinity,
+                  onPressed: () {
+                    submitTask();
+                    debugPrint('Task submitted');
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

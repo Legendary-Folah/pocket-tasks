@@ -6,17 +6,8 @@ class AddTaskModel {
 
   AddTaskModel({
     required this.dueDate,
-    required this.isCompleted,
+    this.isCompleted = false,
     required this.note,
     required this.title,
   });
-
-  // factory AddTaskModel.fromJson(Map<String, dynamic> json) {
-  //   return AddTaskModel(
-  //     dueDate: json['dueDate'] ?? "",
-  //     isCompleted: json['isCompleted'] ?? "",
-  //     note: json['note'] ?? "",
-  //     title: json['title'] ?? "",
-  //   );
-  // }
 }
