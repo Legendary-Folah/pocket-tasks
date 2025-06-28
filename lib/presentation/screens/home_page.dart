@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocket_tasks/presentation/screens/add_task_screen.dart';
+import 'package:pocket_tasks/presentation/screens/task_list.dart';
+import 'package:pocket_tasks/provider/theme_provider.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+int _currentIndex = 0;
+
+class _MyHomePageState extends ConsumerState<MyHomePage> {
+  final List _pocketLists = [AddTaskScreen(), TaskList()];
+
   @override
   Widget build(BuildContext context) {
+    final darkMode = ref.watch(themeProvider);
+    final theme = ref.watch(themeProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Pocket Tasks',
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: darkMode ? Icon(Icons.dark_mode) : Icon(Icons.light_mode),
+            onPressed: () {
+              theme.toggleTheme();
+            },
+          ),
+        ],
       ),
-      body: Center(child: Text('Hello ')),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (value) {
+          setState(() {
+            _currentIndex = value;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.note), label: 'Notes'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Task Lists'),
+        ],
+      ),
+      body: _pocketLists.elementAt(_currentIndex),
     );
   }
 }
