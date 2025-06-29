@@ -23,6 +23,10 @@ class _TaskListState extends ConsumerState<TaskList> {
     final darkMode = ref.watch(themeProvider);
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'Tap on any task to see details...',
+          style: TextStyle(fontSize: 16),
+        ),
         actions: [
           DropdownButton<TaskFilter>(
             value: currentFilter,
@@ -178,21 +182,39 @@ class _TaskListState extends ConsumerState<TaskList> {
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          final fullList = ref.read(
-                                            taskListProvider,
-                                          );
-                                          final realIndex = fullList.indexOf(
-                                            task,
-                                          );
-                                          return EditTasks(
-                                            addTaskModel: task,
-                                            index: realIndex,
-                                          );
-                                        },
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder:
+                                            (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                            ) {
+                                              final fullList = ref.read(
+                                                taskListProvider,
+                                              );
+                                              final realIndex = fullList
+                                                  .indexOf(task);
+                                              return EditTasks(
+                                                addTaskModel: task,
+                                                index: realIndex,
+                                              );
+                                            },
+                                        transitionsBuilder:
+                                            (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child,
+                                            ) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                        transitionDuration: Duration(
+                                          milliseconds: 400,
+                                        ),
                                       ),
                                     );
                                   },
