@@ -4,20 +4,23 @@ import 'package:pocket_tasks/core/colors.dart';
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     super.key,
-    required TextEditingController noteController,
     this.labelText,
     this.maxLines,
-  }) : _noteController = noteController;
+    this.initialValue,
+    this.controller,
+  });
 
-  final TextEditingController _noteController;
   final int? maxLines;
   final String? labelText;
+  final String? initialValue;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: _noteController,
+      controller: controller,
       maxLines: maxLines,
+      initialValue: initialValue,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,

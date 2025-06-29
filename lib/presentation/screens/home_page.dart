@@ -29,7 +29,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: darkMode ? Icon(Icons.dark_mode) : Icon(Icons.light_mode),
+            icon: darkMode ? Icon(Icons.light_mode) : Icon(Icons.dark_mode),
             onPressed: () {
               theme.toggleTheme();
             },

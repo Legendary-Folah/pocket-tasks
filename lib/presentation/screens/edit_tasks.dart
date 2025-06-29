@@ -8,23 +8,36 @@ import 'package:pocket_tasks/presentation/widgets/custom_text_field.dart';
 import 'package:pocket_tasks/provider/add_task_provider.dart';
 import 'package:pocket_tasks/provider/theme_provider.dart';
 
-class AddTaskScreen extends ConsumerStatefulWidget {
-  const AddTaskScreen({super.key});
+class EditTasks extends ConsumerStatefulWidget {
+  const EditTasks({super.key, required this.addTaskModel, required this.index});
+
+  final AddTaskModel addTaskModel;
+  final int index;
 
   @override
-  ConsumerState<AddTaskScreen> createState() => _AddTaskScreenState();
+  ConsumerState<EditTasks> createState() => _EditTasksState();
 }
 
-class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
+class _EditTasksState extends ConsumerState<EditTasks> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
+
   DateTime? selectedDate;
   bool isCompleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = widget.addTaskModel.title;
+    _noteController.text = widget.addTaskModel.note;
+    selectedDate = widget.addTaskModel.dueDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     final darkMode = ref.watch(themeProvider);
-    // final formData = ref.watch(taskListProvider);
+    final theme = ref.watch(themeProvider.notifier);
 
     void pickDate(BuildContext context) async {
       final now = DateTime.now();
@@ -50,24 +63,41 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
           }
           if (_titleController.text.isEmpty && _noteController.text.isEmpty) {
             context.showErrorSnackBar(message: 'Please enter a title or note.');
+            return;
           }
           final tasks = AddTaskModel(
             dueDate: selectedDate!,
             note: _noteController.text.trim(),
             title: _titleController.text.trim(),
           );
-          ref.read(taskListProvider.notifier).addTask(tasks);
+          ref.read(taskListProvider.notifier).updateTask(widget.index, tasks);
           _titleController.clear();
           _noteController.clear();
           selectedDate = null;
-          context.showSuccessSnackBar(message: 'Task added successfully!');
+          context.showSuccessSnackBar(message: 'Task updated successfully!');
         }
       } catch (e) {
-        throw Exception('Failed to submit task: $e');
+        context.showErrorSnackBar(message: 'Failed to update task: $e');
+        throw Exception('Failed to update task: $e');
       }
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Edit Task',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: darkMode ? Icon(Icons.light_mode) : Icon(Icons.dark_mode),
+            onPressed: () {
+              theme.toggleTheme();
+            },
+          ),
+        ],
+      ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -84,16 +114,14 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
                   labelText: 'Title',
                 ),
                 SizedBox(height: 10),
-                CustomTextFormField(maxLines: 7, controller: _noteController),
+                CustomTextFormField(controller: _noteController, maxLines: 7),
                 SizedBox(height: 10),
                 Row(
                   spacing: 4,
                   children: [
                     Expanded(
                       child: Text(
-                        selectedDate != null
-                            ? 'Due: ${selectedDate!.toLocal().toString().split(' ')[0]}'
-                            : 'No due date selected',
+                        '${widget.addTaskModel.dueDate}',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -108,7 +136,6 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
                         height: 40,
                         onPressed: () {
                           pickDate(context);
-                          debugPrint('printing date');
                         },
                         width: 160,
                         text: 'Pick Due Date',
@@ -119,11 +146,14 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
                 SizedBox(height: 12),
                 CustomButton(
                   height: 50,
-                  text: 'Add Task',
+                  text: 'Update Task',
                   width: double.infinity,
                   onPressed: () {
                     submitTask();
-                    debugPrint('Task submitted');
+                    Future.delayed(Duration(seconds: 3), () {
+                      Navigator.pop(context, true);
+                    });
+                    // debugPrint('Task submitted');
                   },
                 ),
               ],

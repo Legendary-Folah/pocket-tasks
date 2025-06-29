@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/core/colors.dart';
+import 'package:pocket_tasks/presentation/screens/edit_tasks.dart';
 import 'package:pocket_tasks/provider/add_task_provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_tasks/provider/tasks_filter_provider.dart';
@@ -148,13 +149,43 @@ class _TaskListState extends ConsumerState<TaskList> {
                                   .toggleTask(index);
                             },
                           ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: ColorsConst.kRed),
-                            onPressed: () {
-                              ref
-                                  .read(taskListProvider.notifier)
-                                  .deleteTask(index);
-                            },
+                          Column(
+                            spacing: 8,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: ColorsConst.kRed,
+                                ),
+                                onPressed: () {
+                                  ref
+                                      .read(taskListProvider.notifier)
+                                      .deleteTask(index);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        final fullList = ref.read(
+                                          taskListProvider,
+                                        );
+                                        final realIndex = fullList.indexOf(
+                                          task,
+                                        );
+                                        return EditTasks(
+                                          addTaskModel: task,
+                                          index: realIndex,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
