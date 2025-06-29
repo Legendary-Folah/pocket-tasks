@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/core/colors.dart';
 import 'package:pocket_tasks/presentation/screens/edit_tasks.dart';
+import 'package:pocket_tasks/presentation/screens/tasks_details_screen.dart';
 import 'package:pocket_tasks/provider/add_task_provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_tasks/provider/tasks_filter_provider.dart';
@@ -81,113 +82,125 @@ class _TaskListState extends ConsumerState<TaskList> {
                   return Column(
                     spacing: 10,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            '${index + 1}.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return TasksDetailsScreen(addTaskModel: task);
+                              },
                             ),
-                          ),
-                          Expanded(
-                            child: ListTile(
-                              title: Text(
-                                task.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: task.isCompleted ? 14 : 16,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: task.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                  fontStyle: task.isCompleted
-                                      ? FontStyle.italic
-                                      : FontStyle.normal,
-                                ),
-                              ),
-                              subtitle: Text(
-                                task.note,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: task.isCompleted ? 13 : 15,
-                                  fontWeight: task.isCompleted
-                                      ? FontWeight.w300
-                                      : FontWeight.w400,
-                                  decoration: task.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                  fontStyle: task.isCompleted
-                                      ? FontStyle.italic
-                                      : FontStyle.normal,
-                                ),
-                              ),
-                              trailing: Text(
-                                '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}',
-                                style: TextStyle(
-                                  decoration: task.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                  fontStyle: task.isCompleted
-                                      ? FontStyle.italic
-                                      : FontStyle.normal,
-                                  fontSize: 12,
-                                  fontWeight: task.isCompleted
-                                      ? FontWeight.w300
-                                      : FontWeight.bold,
-                                ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '${index + 1}.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                          Checkbox(
-                            value: task.isCompleted,
-                            onChanged: (value) {
-                              ref
-                                  .read(taskListProvider.notifier)
-                                  .toggleTask(index);
-                            },
-                          ),
-                          Column(
-                            spacing: 8,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: ColorsConst.kRed,
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  task.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: task.isCompleted ? 14 : 16,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: task.isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                    fontStyle: task.isCompleted
+                                        ? FontStyle.italic
+                                        : FontStyle.normal,
+                                  ),
                                 ),
-                                onPressed: () {
-                                  ref
-                                      .read(taskListProvider.notifier)
-                                      .deleteTask(index);
-                                },
+                                subtitle: Text(
+                                  task.note,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: task.isCompleted ? 13 : 15,
+                                    fontWeight: task.isCompleted
+                                        ? FontWeight.w300
+                                        : FontWeight.w400,
+                                    decoration: task.isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                    fontStyle: task.isCompleted
+                                        ? FontStyle.italic
+                                        : FontStyle.normal,
+                                  ),
+                                ),
+                                trailing: Text(
+                                  '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}',
+                                  style: TextStyle(
+                                    decoration: task.isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                    fontStyle: task.isCompleted
+                                        ? FontStyle.italic
+                                        : FontStyle.normal,
+                                    fontSize: 12,
+                                    fontWeight: task.isCompleted
+                                        ? FontWeight.w300
+                                        : FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        final fullList = ref.read(
-                                          taskListProvider,
-                                        );
-                                        final realIndex = fullList.indexOf(
-                                          task,
-                                        );
-                                        return EditTasks(
-                                          addTaskModel: task,
-                                          index: realIndex,
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Checkbox(
+                              value: task.isCompleted,
+                              onChanged: (value) {
+                                ref
+                                    .read(taskListProvider.notifier)
+                                    .toggleTask(index);
+                              },
+                            ),
+                            Column(
+                              spacing: 8,
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: ColorsConst.kRed,
+                                  ),
+                                  onPressed: () {
+                                    ref
+                                        .read(taskListProvider.notifier)
+                                        .deleteTask(index);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          final fullList = ref.read(
+                                            taskListProvider,
+                                          );
+                                          final realIndex = fullList.indexOf(
+                                            task,
+                                          );
+                                          return EditTasks(
+                                            addTaskModel: task,
+                                            index: realIndex,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       Divider(color: ColorsConst.kGrey, height: 1),
                     ],
