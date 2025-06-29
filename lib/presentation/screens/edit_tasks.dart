@@ -121,7 +121,9 @@ class _EditTasksState extends ConsumerState<EditTasks> {
                   children: [
                     Expanded(
                       child: Text(
-                        '${widget.addTaskModel.dueDate}',
+                        selectedDate != null
+                            ? 'Due: ${selectedDate!.toLocal().toString().split(' ')[0]}'
+                            : 'No due date selected',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
