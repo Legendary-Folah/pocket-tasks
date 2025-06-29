@@ -1,17 +1,14 @@
 # pocket_tasks
 
-A new Flutter project.
+A Flutter project named Pocket Tasks.
 
-## Getting Started
+How to Run the App
+- Run git clone "https://github.com/Legendary-Folah/pocket-tasks.git"
+- once it's loaded, run flutter pub get to get dependencies
+- Load your emulator or connect to a physical device to run your app using flutter run.
 
-This project is a starting point for a Flutter application.
+State Management 
+- Used Riverpod for state management across the app
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# pocket-tasks
+Architecture
+- Tried using the clean architecture which is best to use feature based but this is a project with no much details so we grouped constants like colors in a file, we grouped all screens made in a screen folder while all common widgets in the widget folder.
