@@ -24,7 +24,6 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     final darkMode = ref.watch(themeProvider);
-    // final formData = ref.watch(taskListProvider);
 
     void pickDate(BuildContext context) async {
       final now = DateTime.now();

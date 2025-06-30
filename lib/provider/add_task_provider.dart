@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocket_tasks/model/add_task_model.dart';
